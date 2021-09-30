@@ -1,0 +1,87 @@
+---
+title: "Final Project"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, comment = "")
+```
+
+## Employees
+
+Before the new store opens in Detroit, Cloud has already started the hiring process. Currently there are 20 people willing to work any job within the dispensary, but they have given preferences for each of the main departments. In the `job_preference_list` file, every person is listed with their preference values for each functional unit: the higher the value, the more a person would like to work in that department. Ideally, the employees are distributed equally across the functional units.
+
+```{r}
+# 20 employees
+# 4 departments
+# 5 people in each
+
+library(tidyr)
+
+job_preferences <- load("/Users/kcernugel/Downloads/Simulation and Optimization/job_preference_list.RData")
+
+spread_data <- spread(job_preference, jobType, preference)
+View(spread_data)
+```
+
+```{r}
+library(ompr)
+library(ompr.roi)
+library(ROI.plugin.glpk)
+
+employees <- nrow(spread_data)
+departments <- 4
+capacity <- rep.int(5, departments)
+
+preference_data <- rownames(spread_data) <- spread_data$personName
+preference_data <- spread_data[c("bud tending", "customer service", "marketing", "security")]
+head(preference_data)
+
+preferences <- function(employee) preference_data[employee,]
+
+weight <- function(employee, department) {
+  p <- which(as.numeric(department) == preferences(as.numeric(employee)))
+  as.integer(if (length(p) == 0) {
+    -100000
+  } else {
+    p
+  })
+}
+```
+
+```{r}
+library(ompr)
+model <- MIPModel() %>%
+  # 1 iff student i is assigned to course m
+  add_variable(x[i, j], i = 1:employees, j = 1:departments, type = "binary") %>%
+  
+  # maximize the preferences
+  set_objective(sum_expr(weight(i, j) * x[i, j], i = 1:employees, j = 1:departments)) %>%
+  
+  # we cannot exceed the capacity of a course
+  add_constraint(sum_expr(x[i, j], i = 1:employees) <= capacity[j], j = 1:departments) %>% 
+  
+  # each student needs to be assigned to one course
+  add_constraint(sum_expr(x[i, j], j = 1:departments) == 1, i = 1:employees)
+
+model
+```
+
+```{r}
+result <- solve_model(model, with_ROI(solver = "glpk"))
+```
+
+```{r}
+result <- get_solution(result, x[i, j])
+
+result[result$value == 1, c("i", "j")]
+```
+
+```{r}
+spread_data[result[result$value == 1, c("i", "j")],
+            c("personName", "jobType")]
+
+job_preference[result[result$value == 1, c("i", "j")],
+            c("personName", "jobType")]
+```
+
