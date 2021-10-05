@@ -1,30 +1,68 @@
 ---
-title: "SimOpsFinal_2021"
-author: "Michael Goldschlager"
-date: "9/30/2021"
-output: html_document
+title: "Fall 2021 SimOps Final"
+author: "Michael Goldschlager, "
+date: ""
+output: 
+  revealjs::revealjs_presentation
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(include = FALSE, message = FALSE, warning = FALSE)
 ```
 
-## R Markdown
+## Stocking Shelves
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{r ShelvesCode, include=FALSE}
+library(scales)
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+library(ROI)
+library(ROI.plugin.lpsolve)
+library(ROI.plugin.glpk)
 
-```{r cars}
-summary(cars)
+
+products <- c("flower (3.5 grams)", "pre-rolls (1 gram)", 
+                       "concentrates (1 gram)", "edibles (100 mg)")
+
+costs <- c(25, 5, 50, 10)
+
+demandProportions <- c(0.37, 0.15, 0.20, 0.28)
+
+objectiveValues <- c(45, 12, 60, 15)
+
+constraintValues <- c(850000, rep(0, 4))
+
+zero_diag_matrix <- matrix(1,nrow=4,ncol=4) - diag(4)
+
+demand_constraint_matrix <- (zero_diag_matrix * demandProportions * -1) + diag(4) * (1 - demandProportions)
+
+constraintMatrix <- rbind(unlist(costs),
+                         demand_constraint_matrix)
+
+stockingShelvesOP <- OP(objective = objectiveValues, 
+               constraints = L_constraint(L = constraintMatrix, 
+                                          dir = c('<=', rep('==', 4)),
+                                          rhs = constraintValues), 
+                                          types = rep("I", 4),
+                                          maximum = TRUE)
+
+stockingShelvesOP_Result <- ROI_solve(stockingShelvesOP, solver = "lpsolve")
+
+shelvingSolutionProduction <- data.frame(lapply(setNames(comma(stockingShelvesOP_Result$solution, accuracy = 1), products), type.convert),  
+                                         stringsAsFactors=FALSE, check.names=FALSE)
+shelvingSolutionRevenue <- data.frame(Revenue = dollar_format()(stockingShelvesOP_Result$objval))
+
+shelvingSolutionExpenditures <- data.frame(lapply(setNames(dollar_format()(stockingShelvesOP_Result$solution * costs), products), type.convert),  
+                                         stringsAsFactors=FALSE, check.names=FALSE)
+
+shelvingSolutionPercentBudget <- data.frame(lapply(setNames(percent(sapply(stockingShelvesOP_Result$solution * costs, function(x){x/850000})), 
+                                                            products), type.convert), 
+                                            stringsAsFactors=FALSE, check.names=FALSE)
+
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r ShelvesOutput, include=TRUE, echo=FALSE}
+knitr::kable(shelvingSolutionProduction, caption = "Optimal Units by Product")
+knitr::kable(shelvingSolutionExpenditures, caption = "Expentitures by Product")
+knitr::kable(shelvingSolutionRevenue)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
