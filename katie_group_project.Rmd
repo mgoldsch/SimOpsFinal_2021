@@ -26,10 +26,13 @@ job_preferences <- load("/Users/kcernugel/Downloads/job_preference_list.RData")
 ```
 
 
+
 Notes:
+
 - 20 employees
 - 4 departments
 - 5 employees in each department
+
 
 
 Pivot Data:
@@ -77,20 +80,27 @@ model <- MIPModel() %>%
 model
 ```
 
-Solve Model:
+Solve Model & Results:
 ```{r}
 result <- solve_model(model, with_ROI(solver = "glpk"))
-```
 
-Results:
-```{r}
 result <- get_solution(result, x[i, j])
 
-result[result$value == 1, c("i", "j")]
+result <- result[result$value == 1, c("i", "j")]
+
+team_results <- dplyr::left_join(spread_data, result, by=c("personID"="i"))
+
+team_results$department <- ifelse(team_results$j==1, "bud tending",
+                       ifelse(team_results$j==2, "customer service",
+                              ifelse(team_results$j==3, "marketing",
+                                     "security")))
 ```
 
-Final Table:
 ```{r}
-# figuring out how to put person Name and department Name in data frame
+team_results <- team_results[,c("personName", "department")]
+team_results
 ```
 
+```{r}
+team_results[order(team_results$department),]
+```
