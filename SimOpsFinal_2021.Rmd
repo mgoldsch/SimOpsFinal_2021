@@ -1,6 +1,6 @@
 ---
 title: "Fall 2021 SimOps Final"
-author: "Michael Goldschlager, "
+author: "Michael, Zach, Katie, Ellie "
 date: ""
 output: 
   revealjs::revealjs_presentation:
