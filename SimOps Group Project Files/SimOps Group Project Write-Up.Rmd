@@ -100,12 +100,10 @@ knitr::kable(shelvingSolutionRevenue)
 
 *[2] MOVING PRODUCT.* 
 
-Cloud should be selective when purchasing from its 4 suppliers. In order to minimize cost, Cloud should not purchase flower from all providers for every location. Instead, one or two suppliers should supply each location. 
-RISKS: Although this creates risk (by having 1 or 2 suppliers supply each location, Cloud faces increased risk of receiving no product due to chance events), the cost savings associated likely outweigh these improbable challenges. 
-RESULTS: In employing this strategy, Cloud also will not purchase from Rare Michigan Genetics. Because Cloud has three other suppliers, it does not need a relationship with Rare Michigan Genetics.
+Cloud should be selective when purchasing from its 4 suppliers. In order to minimize cost, Cloud should not purchase flower from all providers for every location. Instead, one or two suppliers should supply each location.  
+RISKS: Although this creates risk (by having 1 or 2 suppliers supply each location, Cloud faces increased risk of receiving no product due to chance events), the cost savings associated likely outweigh these improbable challenges.  
+RESULTS: In employing this strategy, Cloud also will not purchase from Rare Michigan Genetics. Because Cloud has three other suppliers, it does not need a relationship with Rare Michigan Genetics.  
 As it grows, Cloud should consider purchasing from additional suppliers (not at the cost minimizing solution) to maintain wide relationships.
-
-[Code]
 
 ```{r}
 library(linprog)
@@ -217,8 +215,6 @@ Cloud should assign employees to the departments where they help maximize the bu
 * RESULTS: The results of our analysis can be seen in the table below. These results provide the maximum preference scores for each department, thereby maximizing the score for the entire business. From this solution, every employee is placed into a department that they gave their maximum preference score.
 
 ![Employees Result Table](./Employees Result Table.png)
-
-[Code]
 
 Notes:
 
