@@ -37,9 +37,11 @@ For its initial inquiry, the team selected the Stocking Shelves budgeting, Movin
 
 *[1] STOCKING SHELVES.*
 
-[Michael result] 
+Cloud should stock their shelves with products based on maximizing revenue while meeting a cost constraint and producing to meet expected demand proportions for each product.  
+RISKS: Cloud is relying on historical demand, if customer preferences suddenly shift the product mix may no longer be optimal.  
+RESULTS: Cloud can maximize revenue at \$1,288,980 while spending \$848,160. The product mix and expenditure by product can be seen below.
 
-[Code]
+![Stocking Shelves Result Tables](./Stocking Shelves Result Tables.png)
 
 ```{r}
 library(scales)
@@ -214,7 +216,7 @@ Cloud should assign employees to the departments where they help maximize the bu
 
 * RESULTS: The results of our analysis can be seen in the table below. These results provide the maximum preference scores for each department, thereby maximizing the score for the entire business. From this solution, every employee is placed into a department that they gave their maximum preference score.
 
-![Employees Result Table](C:\Users\ellie\Documents\SENIOR YEAR\Simulation and Optimization\SimOps Group Project Files\Employees Result Table.png)
+![Employees Result Table](./Employees Result Table.png)
 
 [Code]
 
@@ -304,7 +306,7 @@ If similar problems arose with the full scope of work for this engagement or a s
 
 *CERNUGEL.* My key takeaway from this project is to utilize the R documentation when stuck on a problem or confused about a concept. While working on my assigned problem, I ran into an issue of not being able to translate what I had written on paper into code. The R documentation for the package I was using helped me better understand the package conceptually and the arguments necessary in my code for my solution. The documentation proved to be an invaluable resource and contained helpful hints and examples for solving the problem. Although I have not used R documentation much in the past, I will certainly use it in the future when I need help. 
 
-*GOLDSCHLAGER.* [KEY TAKEAWAY]
+*GOLDSCHLAGER.* My main takeaway is that it is often beneficial to think of a problem as a math problem first. This enables you to better understand the constraints and then how those constraints can be programmed into a linear programming solver. Understanding what each constraint means and how they interact is important in order to properly model the problem and solve it.
 
 *MAXWELL.* My main takeaway from this project was learning how to condense programming solutions into a narrative to share results in an “understandable” format useful for a client-facing setting. Communicating amongst my teammates was essential to assist them in clarifying the “ask” and closing any knowledge gaps, and to understand how each individual portion of the code interacted to inform the basis of a final recommendation. Both technical and interpersonal expertise must meet to bring a project to a confident close.
 
